@@ -441,3 +441,17 @@ _Define a class of functions F(x,k), so that f'(x)=F(x,1), and some solution F(x
 - [NLopt](https://nlopt.readthedocs.io/en/latest/NLopt_Algorithms/)
 - [Pagmo/Pygmo](https://esa.github.io/pagmo2/docs/algorithm_list.html)
 - [Scipy](https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.minimize.html#scipy.optimize.minimize)
+
+## Todo
+
+- Interior point methods
+
+[Sequential model-based optimization](https://github.com/scikit-optimize/scikit-optimize) (related to "Bayesian optimisation?")
+
+[This tool has an ask-and-tell interface :D](https://github.com/scikit-optimize/scikit-optimize/blob/master/examples/ask-and-tell.ipynb) and includes methods called
+
+- random search
+- forest / "Sequential optimisation using decision trees"
+- gbrt / "Sequential optimization using gradient boosted trees"
+- gp / "Bayesian optimization using Gaussian Processes"
+

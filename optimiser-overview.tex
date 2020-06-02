@@ -7,7 +7,9 @@
 \usepackage[utf8]{inputenc}
 \usepackage[a4paper]{geometry}
 \usepackage{parskip}
+\usepackage{bm}         % \bm letter or symbol in equations
 \usepackage{amsmath}
+\usepackage{amsfonts}
 \usepackage{mathtools}
 \usepackage{stackrel}
 \usepackage{url}
@@ -32,27 +34,159 @@
 Brief overview of derivative-base methods, because some concepts come up again later.
 Then longer overview of derivative-free methods.
 Then some meta-methods, that use other methods.
+Throughout we assume we're minimising a scalar function on a real-valued parameter space.
 \end{abstract}
 
 %
 %
+% Root-finding methods
 %
 %
-%
-\section{Derivative-based methods}
+\section{Root-finding methods}
 
-\subsection{Root-finding methods}
+These methods are concerned with the specific problem of finding the \emph{roots} of a function.
 
+Root-finding methods are sometimes used as the basis for optimisation methods, by reasoning that the minima or maxima of a function correspond to the zeros of its gradient.
+
+%
+% Derivative-based root-finding
+%
+\subsection{Derivative-based root-finding methods}
+
+% Newton's method
 \subsubsection{Newton's method}
 
-%
-%
-% Derivative-free methods
-%
-%
-\section{Derivative-free methods}
+Requires $\bm{x} \in \mathbb{R}^n$, $f(\bm{x}) \to \mathbb{R}$, and a twice-differentiable function so that $f'(\bm{x})$ and $f''(\bm{x})$ both exist and can be computed.
 
-Example reference \citep{Nelder1965NelderMead}
+\paragraph{One-dimension}
+
+Starting from a point $x_k$, we approximate $f$ near $x_k$ with a Taylor series, using a free variable $t$:
+\begin{align}
+f(x_k + t) \approx f(x_k) + f'(x_k)t + \frac{1}{2}f''(x_k)t^2
+\end{align}
+and we approximate the root of $f$ as the root of this parabola, which we find by looking where the derivative is zero:
+\begin{align}
+0 = \frac{d}{dt} \left( f(x_k) + f'(x_k)t + \frac{1}{2}f''(x_k)t^2 \right)
+   = f'(x_k) + f''(x_k)t
+\end{align}
+\begin{align}
+t = -\frac{f'(x_k)}{f''(x_k)}
+\end{align}
+Finally, turn this into an iterative procedure:
+\begin{align}
+x_{k+1} = x_k -\frac{f'(x_k)}{f''(x_k)}
+\end{align}
+
+\paragraph{Modified Newton's method}
+
+Introduce some damping, by setting a step-size $0 < \gamma \leq 1$:
+
+\begin{align}
+x_{k+1} = x_k -\gamma \frac{f'(x_k)}{f''(x_k)}
+\end{align}
+
+\paragraph{Multivariate}
+
+Let $f'(\bm{x})$ be the gradient of $f(\bm{x})$, and $H$ be the Hessian $H_{i,j} = \left[ \frac{\partial^2 f}{\partial x_i \partial x_j} \right]$.
+Then
+\begin{align}
+\bm{x}_{k+1} = \bm{x}_k -\gamma H^{-1}(\bm{x}_k) f'(\bm{x}_k)
+\end{align}
+.
+
+\paragraph{Quasi-Newton methods}
+
+"Quasi-Newton" methods are optimisation methods based on Newton's root-finding method that use approximations of the gradient, Hessian, or both.
+
+\subsubsection{Halley's method}
+
+\url{https://en.wikipedia.org/wiki/Halley%27s_method}
+
+\paragraph{Housholder's methods}
+Generalised this idea, Newton = 1, Halley = 2
+
+\subsubsection{More methods}
+
+1956 Muller's method \url{https://www.jstor.org/stable/2001916} \url{https://en.wikipedia.org/wiki/Muller%27s_method}
+1979 Ridders' method \url{https://doi.org/10.1109/TCS.1979.1084580} \url{https://en.wikipedia.org/wiki/Ridders%27_method}
+
+
+%
+% Derivative-free root-finding methods
+%
+\subsection{Derivative-free root-finding methods}
+
+% Bisection
+\subsubsection{Bisection method}
+
+\url{https://en.wikipedia.org/wiki/Bisection_method}
+
+% Regula falsi
+\subsubsection{Regular falsi}
+
+\url{https://en.wikipedia.org/wiki/Regula_falsi}
+
+% Secant method
+\subsubsection{Secant method}
+
+Predates Newton's method, but can be seen as finite-difference approximation to it.
+
+\url{https://en.wikipedia.org/wiki/Secant_method}
+
+%
+%
+% Derivative-based optimisation methods
+%
+%
+\section{Derivative-based optimisation methods}
+
+These methods assume we know the derivative, and sometimes the second derivative, of the function we're trying to minimise.
+
+%
+% Line-search based methods
+%
+\subsection{Line-search based methods}
+
+At each iteration, these methods choose a direction in parameter space, and then search for a minimum along that line.
+
+They require $\bm{x} \in \mathbb{R}^n$, $f(\bm{x}) \to \mathbb{R}$ and the ability to calculate or approximate $f'(\bm{x})$ and $f''(\bm{x})$.
+
+\begin{enumerate}
+\item Estimate a direction $\bm{p}_k$
+\item Estimate a step size $\alpha_k$ that minimises $f(\bm{x_k} + \alpha_k\bm{p}_k)$
+\item Set $\bm{x}_{k+1} = \bm{x}_k + \alpha_k\bm{p}_k$
+\end{enumerate}
+
+Note that step two requires solving a 1-dimensional optimisation sub-problem.
+This can be solved in an \emph{exact} or an \emph{inexact} way.
+Some guarantees on convergence can be made if $\alpha_k$ is chosen so that the \emph{Wolfe conditions} are satisfied \citep{Wolfe1969Conditions1, Wolfe1971Conditions2}.
+
+%BFGS
+\subsubsection{BFGS: Broyden–Fletcher–Goldfarb–Shanno algorithm}
+
+Requires $\bm{x} \in \mathbb{R}^n$, $f(\bm{x}) \to \mathbb{R}$ and the ability to calculate  $f'(\bm{x})$.
+
+The search direction
+
+
+\paragraph{L-BFGS: Limited memory BFGS}
+
+Slight variation, removes need to store entire Hessian matrix.
+
+
+%
+% Trust-region based methods
+%
+\subsection{Trust-region based methods}
+
+%
+%
+% Derivative-free optimisation methods
+%
+%
+\section{Derivative-free optimisation methods}
+
+Example reference \citet{Nelder1965NelderMead}
 
 
 %
@@ -63,6 +197,18 @@ Example reference \citep{Nelder1965NelderMead}
 \section{Meta-metods}
 
 
+%
+%
+% Software
+%
+%
+\section{Software}
+
+\url{https://en.wikipedia.org/wiki/List_of_optimization_software}
+
+By Katya Scheinberg \citep{Conn2009DerivativeFreeOpt} \url{https://coral.ise.lehigh.edu/katyas/software/}
+
+By Powell \url{https://www.pdfo.net/}
 
 %
 %
